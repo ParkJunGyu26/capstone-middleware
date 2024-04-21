@@ -26,7 +26,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build and test
         run: npm run build
@@ -63,6 +63,6 @@ jobs:
           password: ${{ secrets.AWS_PASSWORD }}
           script: |
             docker pull ${{ secrets.DOCKER_USERNAME }}/kau-capstone:latest
-            docker stop web || true
-            docker rm web || true
+            docker stop $(docker ps -q --filter "publish=3000") || true
+            docker rm $(docker ps -aq --filter "publish=3000") || true
             docker run -d --name web -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/kau-capstone:latest
