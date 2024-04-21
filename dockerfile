@@ -1,23 +1,15 @@
-# Base image
-FROM node:20.10.0-alpine
-
-# Create app directory
+# Build stage
+FROM node:20.10.0-alpine as builder
 WORKDIR /usr/src/app
-
-# Copy package.json and package-lock.json
 COPY package*.json ./
-
-# Install all dependencies
 RUN npm install
-
-# Bundle app source
 COPY . .
-
-# Creates a "dist" folder with the production build
 RUN npm run build
 
-# Start the server using the production build
-CMD [ "node", "dist/main.js" ]
-
-# Inform Docker that the container is listening on the specified port at runtime.
+# Production stage
+FROM node:20.10.0-alpine
+WORKDIR /usr/src/app
+COPY --from=builder /usr/src/app/dist ./dist
+COPY --from=builder /usr/src/app/node_modules ./node_modules
 EXPOSE 3000
+CMD ["node", "dist/main.js"]
