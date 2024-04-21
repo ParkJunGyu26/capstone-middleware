@@ -77,5 +77,5 @@ jobs:
               docker rm web
             fi
 
-            # Run the new container
-            docker run -d --name web -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/kau-capstone:latest
+            # Run the new container with the environment variable
+            docker run -d --name web -p 3000:3000 -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} ${{ secrets.DOCKER_USERNAME }}/kau-capstone:latest
