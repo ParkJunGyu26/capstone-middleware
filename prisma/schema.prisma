@@ -9,7 +9,7 @@ datasource db {
 
 model User {
   userIdx      String   @id @default(auto()) @map("_id") @db.ObjectId
-  userName     String?
+  userName     String   @unique
   connect      Connect[]
   total        Total?
 }

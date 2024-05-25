@@ -3,8 +3,9 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ChatGptService } from './chat-gpt/chat-gpt.service';
-import { ScoreService } from './score/score.service';
-import { ScoreController } from './score/score.controller';
+import { ConnectModule } from './connect/connect.module';
+import { UserModule } from './user/user.module';
+import { TotalModule } from './total/total.module';
 
 @Module({
   imports: [
@@ -12,8 +13,11 @@ import { ScoreController } from './score/score.controller';
       isGlobal: true,
       envFilePath: '.env',
     }),
+    ConnectModule,
+    UserModule,
+    TotalModule,
   ],
-  controllers: [AppController, ScoreController],
-  providers: [AppService, ChatGptService, ScoreService],
+  controllers: [AppController],
+  providers: [AppService, ChatGptService],
 })
 export class AppModule {}
