@@ -53,6 +53,9 @@ jobs:
     needs: build_and_push
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Deploying to EC2
         uses: appleboy/ssh-action@master
         with:
@@ -60,18 +63,25 @@ jobs:
           username: ${{ secrets.AWS_USERNAME }}
           password: ${{ secrets.AWS_PASSWORD }}
           script: |
-            # Pull the latest image
+            # 디렉토리 생성 및 이동
+            mkdir -p /home/ubuntu/myproject
+            cd /home/ubuntu/myproject
+
+            # docker-compose.yml 파일 복사
+            scp -o StrictHostKeyChecking=no -i /path/to/your/private-key.pem docker-compose.yml ubuntu@${{ secrets.AWS_HOST }}:/home/ubuntu/myproject
+
+            # 최신 이미지를 풀
             docker pull ${{ secrets.DOCKER_USERNAME }}/kau-capstone:latest
 
-            # Stop and remove any existing container named 'web'
+            # 기존 컨테이너가 있다면 중지하고 제거
             if docker ps -q --filter "name=web"; then
               docker stop web
               docker rm web
             fi
 
-            # Create .env file
+            # .env 파일 생성
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
             echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
 
-            # Use docker-compose to run the new container
+            # docker-compose를 사용하여 새로운 컨테이너 실행
             docker-compose up -d
