@@ -3,6 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ChatGptService } from './chat-gpt/chat-gpt.service';
+import { ScoreService } from './score/score.service';
+import { ScoreController } from './score/score.controller';
 
 @Module({
   imports: [
@@ -11,7 +13,7 @@ import { ChatGptService } from './chat-gpt/chat-gpt.service';
       envFilePath: '.env',
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService, ChatGptService],
+  controllers: [AppController, ScoreController],
+  providers: [AppService, ChatGptService, ScoreService],
 })
 export class AppModule {}
