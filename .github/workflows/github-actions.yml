@@ -61,14 +61,39 @@ jobs:
         with:
           host: ${{ secrets.AWS_HOST }}
           username: ${{ secrets.AWS_USERNAME }}
-          password: ${{ secrets.AWS_PASSWORD }}
+          key: ${{ secrets.AWS_PRIVATE_KEY }}
           script: |
             # 디렉토리 생성 및 이동
             mkdir -p /home/ubuntu/myproject
             cd /home/ubuntu/myproject
 
-            # docker-compose.yml 파일 복사
-            scp -o StrictHostKeyChecking=no -i /path/to/your/private-key.pem docker-compose.yml ubuntu@${{ secrets.AWS_HOST }}:/home/ubuntu/myproject
+            # docker-compose.yml 파일 생성
+            cat <<EOF > docker-compose.yml
+            version: '3.8'
+            services:
+              app:
+                image: ${{ secrets.DOCKER_USERNAME }}/kau-capstone:latest
+                ports:
+                  - '3000:3000'
+                env_file:
+                  - .env
+                depends_on:
+                  - mongo
+
+              mongo:
+                image: mongo:latest
+                ports:
+                  - '27017:27017'
+                volumes:
+                  - mongo-data:/data/db
+
+            volumes:
+              mongo-data:
+            EOF
+
+            # .env 파일 생성
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
+            echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
 
             # 최신 이미지를 풀
             docker pull ${{ secrets.DOCKER_USERNAME }}/kau-capstone:latest
@@ -78,10 +103,6 @@ jobs:
               docker stop web
               docker rm web
             fi
-
-            # .env 파일 생성
-            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
-            echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
 
             # docker-compose를 사용하여 새로운 컨테이너 실행
             docker-compose up -d
