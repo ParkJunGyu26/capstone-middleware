@@ -6,15 +6,7 @@ on:
       - develop
 
 jobs:
-  prepare:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup Cache
-        id: cache-setup
-        run: echo "::set-output name=date::$(date +%Y-%m-%d)"
-
   build_and_push:
-    needs: prepare
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -29,7 +21,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-node-${{ needs.prepare.outputs.date }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
       - name: Install Dependencies
         run: npm ci
@@ -77,5 +69,9 @@ jobs:
               docker rm web
             fi
 
-            # Run the new container with the environment variable
-            docker run -d --name web -p 3000:3000 -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} ${{ secrets.DOCKER_USERNAME }}/kau-capstone:latest
+            # Create .env file
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
+            echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
+
+            # Use docker-compose to run the new container
+            docker-compose up -d
