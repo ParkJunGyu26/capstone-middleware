@@ -44,7 +44,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/kau-capstone:latest
+          tags: parkjungyu26/kau-capstone:latest
           platforms: linux/amd64,linux/arm64
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
@@ -88,7 +88,7 @@ jobs:
             echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
 
             # 최신 이미지를 풀
-            docker pull ${{ secrets.DOCKER_USERNAME }}/kau-capstone:latest
+            docker pull parkjungyu26/kau-capstone:latest
 
             # 기존 컨테이너가 있다면 중지하고 제거
             if docker ps -q --filter "name=web"; then
