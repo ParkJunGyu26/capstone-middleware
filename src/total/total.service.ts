@@ -42,6 +42,6 @@ export class TotalService {
 
     console.log('total : ', total);
 
-    return total ? total.totalScore : 0;
+    return total ? { totalScore: total.totalScore } : { totalScore: 0 };
   }
 }
