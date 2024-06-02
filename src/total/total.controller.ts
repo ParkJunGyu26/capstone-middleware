@@ -13,11 +13,15 @@ export class TotalController {
     console.log(
       `Received request to update total score for user ${userIdx} with score ${body.score}`,
     );
-    return this.totalService.updateTotal(userIdx, body.score);
+    const result = await this.totalService.updateTotal(userIdx, body.score);
+    console.log(`Update result: ${JSON.stringify(result)}`);
+    return result;
   }
 
   @Get(':userIdx/score')
   async getTotalScore(@Param('userIdx') userIdx: string) {
-    return this.totalService.getTotalScore(userIdx);
+    const result = await this.totalService.getTotalScore(userIdx);
+    console.log(`Get total score result: ${JSON.stringify(result)}`);
+    return result;
   }
 }

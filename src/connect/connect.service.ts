@@ -14,7 +14,7 @@ export class ConnectService {
 
   async updateScore(connectIdx: string, score: number) {
     return this.prisma.connect.update({
-      where: { connectIdx },
+      where: { connectIdx }, // Updated to use 'connectIdx' field
       data: { score },
     });
   }
