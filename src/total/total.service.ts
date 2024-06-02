@@ -9,7 +9,7 @@ export class TotalService {
     console.log(`Updating total score for user ${userIdx} with score ${score}`);
 
     try {
-      const total = await this.prisma.total.findUnique({
+      const total = await this.prisma.total.findFirst({
         where: { userIdx },
       });
 
@@ -17,17 +17,21 @@ export class TotalService {
         console.log(
           `Current total score: ${total.totalScore}. Updating to ${score}`,
         );
-        return this.prisma.total.update({
-          where: { userIdx },
+        const updatedTotal = await this.prisma.total.update({
+          where: { userIdx: total.userIdx }, // 고유 필드 userIdx 사용
           data: { totalScore: score },
         });
+        console.log(`Total updated: ${JSON.stringify(updatedTotal)}`);
+        return updatedTotal;
       } else {
         console.log(
           `Creating new total score for user ${userIdx} with score ${score}`,
         );
-        return this.prisma.total.create({
+        const newTotal = await this.prisma.total.create({
           data: { userIdx, totalScore: score },
         });
+        console.log(`Total created: ${JSON.stringify(newTotal)}`);
+        return newTotal;
       }
     } catch (error) {
       console.error(`Failed to update total score for user ${userIdx}:`, error);
@@ -36,11 +40,11 @@ export class TotalService {
   }
 
   async getTotalScore(userIdx: string) {
-    const total = await this.prisma.total.findUnique({
+    const total = await this.prisma.total.findFirst({
       where: { userIdx },
     });
 
-    console.log('total : ', total);
+    console.log('Total fetched: ', total);
 
     return total ? { totalScore: total.totalScore } : { totalScore: 0 };
   }

@@ -8,33 +8,34 @@ datasource db {
 }
 
 model User {
-  userIdx      String   @id @default(auto()) @map("_id") @db.ObjectId
-  userName     String   @unique
-  connect      Connect[]
-  total        Total?
+  userIdx  String   @id @default(auto()) @map("_id") @db.ObjectId
+  userName String   @unique
+  Connect  Connect[]
+  Total    Total[]
 }
 
 model Connect {
-  connectIdx   String   @id @default(auto()) @map("_id") @db.ObjectId
-  startTime    DateTime?
-  endTime      DateTime?
-  score        Int?
-  missionIdx   String   @db.ObjectId
-  userIdx      String   @db.ObjectId
-  mission      Mission  @relation(fields: [missionIdx], references: [missionIdx])
-  user         User     @relation(fields: [userIdx], references: [userIdx])
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  connectIdx String   @unique
+  startTime  DateTime?
+  endTime    DateTime?
+  score      Int?
+  missionIdx String   @db.ObjectId
+  userIdx    String   @db.ObjectId
+  Mission    Mission  @relation(fields: [missionIdx], references: [id])
+  User       User     @relation(fields: [userIdx], references: [userIdx])
 }
 
 model Mission {
-  missionIdx   String   @id @default(auto()) @map("_id") @db.ObjectId
-  missionType  Int?
-  connect      Connect[]
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  missionType Int?
+  Connect     Connect[]
 }
 
 model Total {
-  totalIdx     String   @id @default(auto()) @map("_id") @db.ObjectId
-  totalTime    Int?
-  totalScore   Int?
-  userIdx      String   @unique @db.ObjectId
-  user         User     @relation(fields: [userIdx], references: [userIdx])
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  totalTime Int?
+  totalScore Int?
+  userIdx   String @unique @db.ObjectId
+  User      User   @relation(fields: [userIdx], references: [userIdx])
 }
