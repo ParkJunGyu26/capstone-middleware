@@ -71,7 +71,7 @@ export class UserService {
         const connectPromises = missions.map((mission) =>
           this.prisma.connect.create({
             data: {
-              userIdx: user.userIdx,
+              userIdx: user!.userIdx, // Non-null assertion operator
               missionIdx: mission.missionIdx,
               score: 0,
               spendTime: 0,
@@ -82,6 +82,10 @@ export class UserService {
       }
     }
 
-    return { userIdx: user.userIdx, userName: user.userName };
+    if (user) {
+      return { userIdx: user.userIdx, userName: user.userName };
+    } else {
+      return null;
+    }
   }
 }
