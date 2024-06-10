@@ -1,3 +1,4 @@
+# github-actions
 name: CI/CD Pipeline to EC2
 
 on:
@@ -90,6 +91,12 @@ jobs:
             echo "MYSQL_USER=${{ secrets.MYSQL_USER }}" >> .env
             echo "MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}" >> .env
 
+            # Docker 시스템 정리
+            docker container prune -f
+            docker image prune -a -f
+            docker volume prune -f
+            docker network prune -f
+
             # 최신 이미지를 풀
             docker pull parkjungyu26/kau-capstone:latest
 
@@ -100,5 +107,5 @@ jobs:
             fi
 
             # docker-compose를 사용하여 새로운 컨테이너 실행
-            docker-compose down
+            docker-compose down --remove-orphans
             docker-compose up -d
