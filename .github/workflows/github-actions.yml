@@ -86,6 +86,9 @@ jobs:
             # .env 파일 생성
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
             echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
+            echo "MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}" >> .env
+            echo "MYSQL_USER=${{ secrets.MYSQL_USER }}" >> .env
+            echo "MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}" >> .env
 
             # 최신 이미지를 풀
             docker pull parkjungyu26/kau-capstone:latest
