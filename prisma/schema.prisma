@@ -3,39 +3,35 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  userIdx  String   @id @default(auto()) @map("_id") @db.ObjectId
-  userName String   @unique
-  Connect  Connect[]
-  Total    Total[]
+  userIdx    Int      @id @default(autoincrement())
+  userName   String   @unique
+  connects   Connect[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model Connect {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  connectIdx String   @unique
-  startTime  DateTime?
-  endTime    DateTime?
-  score      Int?
-  missionIdx String   @db.ObjectId
-  userIdx    String   @db.ObjectId
-  Mission    Mission  @relation(fields: [missionIdx], references: [id])
+  connectIdx Int      @id @default(autoincrement())
+  spendTime  Int?     // 소요 시간 필드 추가
+  score      Int?     @default(0)
+  missionIdx Int
+  userIdx    Int
+  Mission    Mission  @relation(fields: [missionIdx], references: [missionIdx])
   User       User     @relation(fields: [userIdx], references: [userIdx])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model Mission {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  missionIdx  Int      @id @default(autoincrement())
   missionType Int?
-  Connect     Connect[]
-}
-
-model Total {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  totalTime Int?
-  totalScore Int?
-  userIdx   String @unique @db.ObjectId
-  User      User   @relation(fields: [userIdx], references: [userIdx])
+  description String?
+  connects    Connect[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

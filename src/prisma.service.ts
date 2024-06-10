@@ -6,16 +6,17 @@ export class PrismaService
   extends PrismaClient
   implements OnModuleInit, OnModuleDestroy
 {
+  constructor() {
+    super({
+      log: ['query', 'info', 'warn', 'error'], // 로그 레벨 설정
+    });
+  }
+
   async onModuleInit() {
     await this.$connect();
   }
 
   async onModuleDestroy() {
     await this.$disconnect();
-  }
-
-  async clearTotalTable() {
-    await this.total.deleteMany();
-    console.log('토탈 테이블 초기화');
   }
 }
