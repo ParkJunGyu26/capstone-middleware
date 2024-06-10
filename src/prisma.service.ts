@@ -13,9 +13,4 @@ export class PrismaService
   async onModuleDestroy() {
     await this.$disconnect();
   }
-
-  async clearTotalTable() {
-    await this.total.deleteMany();
-    console.log('토탈 테이블 초기화');
-  }
 }
